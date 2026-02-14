@@ -6,15 +6,15 @@ ALTER TABLE employees
 ADD CONSTRAINT unique_employee_email UNIQUE (email);
 
 --2. Add phone_number column to the 'employees' table 
-ALTER TABLE employees
+ALTER TABLE customers
 ADD COLUMN phone_number TEXT;
 
 -- Populate column with sample data
-UPDATE employees
+UPDATE customers
 SET phone_number = '+374 10 101010'; 
 
 --3. Employee phone numbers must be mandatory
-ALTER TABLE employees
+ALTER TABLE customers
 ALTER COLUMN phone_number SET NOT NULL;
 
 --4. Product prices must be non-negative

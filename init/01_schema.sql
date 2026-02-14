@@ -56,3 +56,4 @@ CREATE INDEX IF NOT EXISTS idx_sales_order_id   ON sales(order_id);
 CREATE INDEX IF NOT EXISTS idx_sales_product_id ON sales(product_id);
 CREATE INDEX IF NOT EXISTS idx_sales_customer_id ON sales(customer_id);
 CREATE INDEX IF NOT EXISTS idx_orders_date      ON orders(order_date);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);

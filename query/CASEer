@@ -1,0 +1,59 @@
+SELECT
+	COUNT(customer_name) as customers,
+	CASE 
+		WHEN total_sales > 200 THEN 'High value'
+		WHEN total_sales BETWEEN 100 AND 201 THEN 'Medium value'
+		ELSE 'Low value'
+	END AS customer_value
+FROM sales_analysis
+GROUP BY 
+	CASE 
+		WHEN total_sales > 200 THEN 'High value'
+		WHEN total_sales BETWEEN 100 AND 201 THEN 'Medium value'
+		ELSE 'Low value'
+	END
+LIMIT 10
+;
+
+SELECT
+	customer_name,
+	CASE 
+		WHEN total_sales > (SELECT
+								customer_name,
+								AVG(total_sales) as avg_sales
+							From sales_analysis
+							GROUP BY customer_name) 
+							THEN 'Above average'
+		WHEN total_sales = (SELECT
+								customer_name,
+								AVG(total_sales) as avg_sales
+							From sales_analysis
+							GROUP BY customer_name) 
+							THEN 'Average'
+		ELSE 'Under average'
+	END AS segment
+FROM sales_analysis
+GROUP BY 
+	WHEN total_sales > (	SELECT
+								customer_name,
+								AVG(total_sales) as avg_sales
+							From sales_analysis
+							GROUP BY customer_name) 
+							THEN 'Above average'
+		WHEN total_sales = (SELECT
+								customer_name,
+								AVG(total_sales) as avg_sales
+							From sales_analysis
+							GROUP BY customer_name) 
+							THEN 'Average'
+		ELSE 'Under average'
+	END
+;
+
+-- SELECT
+-- 	customer_name,
+-- 	AVG(total_sales) as avg_sales
+-- From sales_analysis
+-- GROUP BY customer_name
+-- ;
+

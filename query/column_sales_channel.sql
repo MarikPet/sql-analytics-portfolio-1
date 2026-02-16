@@ -12,4 +12,4 @@ UPDATE sales
 SET sales_channel = CASE
     WHEN order_id % 2 = 0 THEN 'Online'  -- Example logic: even order_ids are 'Online'
     ELSE 'Store'                          -- odd order_ids are 'Store'
-END;
+END;    

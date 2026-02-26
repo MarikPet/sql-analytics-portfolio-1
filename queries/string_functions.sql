@@ -41,12 +41,15 @@ ORDER BY COUNT(*) DESC
 -- NULL check
 SELECT
 	COUNT(*) AS count_of_rows,
-	COUNT(DISTINCT category_raw) AS categories
+	COUNT(transaction_id) AS transactions,
+	COUNT(customer_id) AS customers,
+	COUNT(raw_phone) AS raw_phones,
+	COUNT(category_raw) AS categories_raw,
+	COUNT(quantity) AS quantities,
+	COUNT(price) AS prices
 FROM transactions_text_demo
-GROUP BY category_raw
-HAVING category_raw IS NULL
 ;
--- NULLs absent
+-- All columns are of length 1000, so NULLs are absent
 
 -- profiling (inspection)
 SELECT

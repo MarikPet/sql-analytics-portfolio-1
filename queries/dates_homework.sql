@@ -1,45 +1,29 @@
-SELECT 
-	*
-FROM sales_analysis
-;
-
-SELECT
-  order_date_date,
-  EXTRACT(YEAR FROM order_date_date)  AS year,
-  EXTRACT(MONTH FROM order_date_date) AS month,
-  EXTRACT(DAY FROM order_date_date)   AS day, 
-  EXTRACT(DOW FROM order_date_date) as weekday
-FROM sales_analysis
-LIMIT 5
-;
-
-
-SELECT
-	DATE_TRUNC('month', order_date_date) AS month,
-	SUM(total_sales) AS total_revenue
-FROM sales_analysis
-GROUP BY 
-	DATE_TRUNC('month', order_date_date) 
-ORDER BY month
-;
-
-
+-- The top quarter by revenue
 SELECT
 	DATE_TRUNC('quarter', order_date_date) AS quarter,
 	SUM(total_sales) AS total_revenue
 FROM sales_analysis
 GROUP BY 
-	DATE_TRUNC('quarter', order_date_date) 
-ORDER BY quarter
+	DATE_TRUNC('quarter', order_date_date)
+ORDER BY total_revenue DESC
+LIMIT 1
 ;
 
+--The top 3 months by revenue
 SELECT
-	DATE_TRUNC('year', order_date_date) AS year,
+	DATE_TRUNC('month', order_date_date) AS month,
 	SUM(total_sales) AS total_revenue
 FROM sales_analysis
-GROUP BY 
-	DATE_TRUNC('year', order_date_date) 
-ORDER BY year
+GROUP BY DATE_TRUNC('quarter', order_date_date),
+DATE_TRUNC('month', order_date_date)
+ORDER BY total_revenue DESC
+LIMIT 3
 ;
 
-SELECT NOW();
+--Transactions from the last 60 days
+SELECT
+  order_date_date,
+  CURRENT_DATE - order_date_date AS days_since_order
+FROM sales_analysis
+WHERE CURRENT_DATE - order_date_date < 60
+;

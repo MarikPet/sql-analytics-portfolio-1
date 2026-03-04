@@ -12,7 +12,7 @@ ORDER BY
 ;
 
 -- Quarterly aggregation of revenue didn't reveal any common trend.
--- The strongest growth period is the second quarter of 2023
+-- The strongest growth period is the second quarter of 2023, and the lowest is the third quarter of 2023
 
 
 -- Monthly aggregation of revenue
@@ -30,7 +30,7 @@ ORDER BY
 -- Monthly aggregation of revenue shows that while in 2020 its value was relatively low, it was stable across months. 
 -- During the next two years, revenue flow was quite unstable and stabilised in the last year.  
 -- The highest levels of revenue are observed in spring-end and summer months, and in December mostly. 
--- The strongest growth month is December 2021.
+-- The strongest growth month is December 2021. The lowest growth month is September 2023. 
 
 
 -- Yearly aggregation of revenue
@@ -48,7 +48,7 @@ ORDER BY
 
 -- Yearly aggregation of revenue shows wave-shaped behavior, 
 -- growing in one year and decreasing in the next, and
--- having the highest value in 2021
+-- having the highest value in 2021, and the lowest in 2022.
 
 
 -- So different grains show different aspects of the same phenomenon.

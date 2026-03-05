@@ -92,7 +92,7 @@ ORDER BY
 -- when grouped by revenue range, shows transactions_count by range and total_revenue by range,
 -- when ordered by total revenue, shows that the dominant revenue range is 350 (300 < x <= 350)
 
--- Comparison of the distinct empolyees count and the salary records count shows that one employee 
+-- Comparison of the distinct employees count and the salary records count shows that one employee 
 -- has more than one salary record, so we can not do aggregation directly by employee_salary. 
 -- It will not be realistic. 
 

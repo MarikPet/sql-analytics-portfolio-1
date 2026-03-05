@@ -56,7 +56,7 @@ SELECT
 		WHEN 
 			SUM(total_sales) BETWEEN 60000 AND 80000
 			AND COUNT(transaction_id) BETWEEN 230 AND 300
-		THEN 'Awerage performer'
+		THEN 'Average performer'
 		ELSE 'Underperformer'
 	END AS performer_level
 FROM sales_analysis
@@ -73,11 +73,11 @@ HAVING
 		WHEN 
 			SUM(total_sales) BETWEEN 60000 AND 80000
 			AND COUNT(transaction_id) BETWEEN 230 AND 300
-		THEN 'Awerage performer'
+		THEN 'Average performer'
 		
 		ELSE 'Underperformer'
 	END 
-	IN ('Strong performer', 'Awerage performer')
+	IN ('Strong performer', 'Average performer')
 ORDER BY sales_by_category DESC
 ;
 

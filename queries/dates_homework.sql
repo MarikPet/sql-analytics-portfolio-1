@@ -28,7 +28,7 @@ ORDER BY
 ;
 
 -- Monthly aggregation of revenue shows that while in 2020 its value was relatively low, it was stable across months. 
--- During the next two years, revenue flow was quite unstable and stabilised in the last year.  
+-- During the next two years, revenue flow was quite unstable and stabilized in the last year.  
 -- The highest levels of revenue are observed in spring-end and summer months, and in December mostly. 
 -- The strongest growth month is December 2021. The lowest growth month is September 2023. 
 

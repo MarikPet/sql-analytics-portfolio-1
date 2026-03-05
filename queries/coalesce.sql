@@ -1,4 +1,4 @@
--- STEP 1: updating dicount seting null in case of zero
+-- STEP 1: updating discount setting null in case of zero
 UPDATE public.sales_analysis
 SET discount = NULL
 WHERE discount = 0;

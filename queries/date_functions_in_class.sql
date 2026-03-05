@@ -14,8 +14,8 @@ SELECT
 	DATE_TRUNC('month', order_date_date) AS month,
 	SUM(total_sales) AS total_revenue
 FROM sales_analysis
-GROUP BY DATE_TRUNC('quarter', order_date_date),
-DATE_TRUNC('month', order_date_date)
+GROUP BY 
+	DATE_TRUNC('month', order_date_date)
 ORDER BY total_revenue DESC
 LIMIT 3
 ;

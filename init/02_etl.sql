@@ -2,7 +2,7 @@
 \echo 'Loading employees...'
 COPY employees(employee_id,first_name,last_name,email,salary)
 FROM '/docker-entrypoint-initdb.d/data/public_schema/employees.csv'
-WITH (FORMAT csv, HEADER true)
+WITH (FORMAT csv, HEADER true);
 
 \echo 'Loading customers...'
 COPY customers(customer_id,customer_name,address,city,zip_code)

@@ -65,3 +65,11 @@ GROUP BY
 	customer_name,
 	order_date_date
 ;
+
+--Transactions from the last 60 days
+SELECT
+  order_date_date,
+  CURRENT_DATE - order_date_date AS days_since_order
+FROM sales_analysis
+WHERE CURRENT_DATE - order_date_date < 60
+;

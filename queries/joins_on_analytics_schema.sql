@@ -1,4 +1,7 @@
 -- Customers, products sold to them, and locations where those products were sold
+
+-- Some customers are located outside cities.
+-- There are not customers who have never placed an order.
 SELECT 
 	country_name,
 	p.product_name,
@@ -39,10 +42,6 @@ GROUP BY
 ORDER BY total_revenue DESC	
 ;
 
--- Some customers are located outside cities.
-
--- There are not customers who have never placed an order.
-
 -- Joining orders to order items increases row count because 
 -- there is '1-M' relationship between an order(1) and order items(many)
 
@@ -65,6 +64,8 @@ ORDER BY total_revenue DESC
 
 
 -- Customers and their cities
+
+-- There are not customers without a city.
 SELECT 
     first_name || ' ' || last_name AS customer_name,
 	ci.city_id
@@ -72,4 +73,3 @@ FROM analytics.customers c
 LEFT JOIN analytics.cities ci ON c.city_id = ci.city_id
 WHERE ci.city_id IS NULL
 ;
--- There are not customers without a city.

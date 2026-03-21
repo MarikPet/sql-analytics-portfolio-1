@@ -1,0 +1,59 @@
+SELECT
+	 o.order_id,
+	 customer_id,
+	 ROUND(AVG(quantity*price) OVER(PARTITION BY customer_id), 2) AS order_avg_value_per_customer 
+FROM analytics.orders o
+JOIN analytics.order_items oi ON o.order_id = oi.order_id
+JOIN analytics.products p ON oi.product_id = p.product_id
+;
+
+
+SELECT
+	 o.order_id,
+	 customer_id,
+	 quantity,
+	 price,
+	 (quantity*price) AS order_revenue,
+	 PERCENT_RANK() OVER(PARTITION BY customer_id ORDER BY quantity*price) AS order_percent_rank 
+FROM analytics.orders o
+JOIN analytics.order_items oi ON o.order_id = oi.order_id
+JOIN analytics.products p ON oi.product_id = p.product_id
+;
+
+SELECT
+	 o.order_id,
+	 customer_id,
+	 (quantity*price) AS order_revenue,
+	 LAG(quantity*price) OVER(PARTITION BY customer_id ORDER BY order_date ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) AS previous_order,
+	 (quantity*price) -
+	 COALESCE(LAG(quantity*price) OVER(PARTITION BY customer_id ORDER BY order_date), quantity*price) AS diff_previous_order
+FROM analytics.orders o
+JOIN analytics.order_items oi ON o.order_id = oi.order_id
+JOIN analytics.products p ON oi.product_id = p.product_id
+;
+
+-- Rank customers within city by their total spent
+SELECT
+	city_name,
+	c.customer_id,
+	SUM(quantity*price) AS total_spent,
+	DENSE_RANK() OVER (PARTITION BY c.city_id ORDER BY SUM(quantity*price)) 		
+FROM analytics.orders o
+JOIN analytics.order_items oi ON o.order_id = oi.order_id
+JOIN analytics.customers c ON o.customer_id = c.customer_id 
+JOIN analytics.products p ON oi.product_id = p.product_id
+JOIN analytics.cities ci ON c.city_id = ci.city_id
+GROUP BY city_name, c.customer_id
+;
+
+SELECT
+	CONCAT(first_name, ' ', last_name) AS customer,
+	order_date,
+	STRING_AGG(category, ', ') 
+		OVER (PARTITION BY c.customer_id ORDER BY order_date
+		ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) 		
+FROM analytics.orders o
+JOIN analytics.order_items oi ON o.order_id = oi.order_id
+JOIN analytics.customers c ON o.customer_id = c.customer_id 
+JOIN analytics.products p ON oi.product_id = p.product_id
+;

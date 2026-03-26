@@ -13,3 +13,5 @@ CREATE TABLE analytics.coffee_shop_raw (
     product_name VARCHAR(100),
 	product_detail VARCHAR(100)
 );
+
+CREATE EXTENSION IF NOT EXISTS postgis;

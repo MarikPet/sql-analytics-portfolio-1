@@ -1,7 +1,8 @@
 -- NYC-based coffee shop transaction data
 SELECT 
 	*
-FROM analytics.coffee_shop_raw;
+FROM analytics.coffee_shop_raw
+LIMIT 160;
 
 -- -- Exploring coffee_shop_raw table
 
@@ -28,8 +29,9 @@ FROM analytics.coffee_shop_raw;
 -- The coffee_shop_raw table isn't normalized
 
 -- store_id uniquely identifies a store
--- store_location is store attribute, it isn't transitive
+-- store_location is store attribute,
 -- So, store attributes should be separated 
+-- Also, I intent to add GEOMETRY data for store_location in a separate table (related with stores table by store_id) 
 
 -- One category tied to many transactions, and has many products, 
 -- So, it should be separated from transactions and products

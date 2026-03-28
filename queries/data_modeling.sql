@@ -1,10 +1,36 @@
 -- NYC-based coffee shop transaction data
+
+
+-- THE GOAL
+
+-- What is the general statistic schema of coffee shop condition?
+-- What is the geographical distribution of coffee shops?
+-- Which categories/products are the top best sellers?
+-- Which days of week bring the most revenue?
+-- Which time of the day is the pick-time, which products are best sellers at that time?
+-- Which area brings the most revenue?
+-- The operational load of each shop (quantity sold).
+-- Distances between the shops. Is there need to establish a shop somewhere else?
+
+
+-- -- Exploring coffee_shop_raw table
+
+-- The raw data
 SELECT 
 	*
 FROM analytics.coffee_shop_raw
-LIMIT 160;
+LIMIT 160
+;
 
--- -- Exploring coffee_shop_raw table
+
+SELECT 
+	COUNT (DISTINCT store_id) AS distinct_stores,
+	COUNT (DISTINCT category) AS distinct_categories,
+	COUNT (DISTINCT product_id) AS distinct_product_ids,
+	COUNT (DISTINCT product_name) AS distinct_product_names,
+	COUNT (DISTINCT product_detail) AS distinct_product_details
+FROM analytics.coffee_shop_raw
+;
 
 -- We have: 
 -- 	transaction information

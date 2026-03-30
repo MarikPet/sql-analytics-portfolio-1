@@ -38,5 +38,6 @@ services:
     volumes:
       - ./pgadmin_data:/var/lib/pgadmin
       - ./queries:/var/lib/pgadmin/storage/admin_admin.com/queries
+      - ./queries:/var/lib/pgadmin/storage/admin_admin.com/erd
     depends_on:
       - db

@@ -1,4 +1,8 @@
 -- NYC-based coffee shop transaction data
+-- Fully denormalized table
+-- NO primary keys
+-- NO foreign keys
+-- For every product_name multiple product_details
 
 
 -- THE GOAL
@@ -22,16 +26,6 @@ FROM analytics.coffee_shop_raw
 LIMIT 160
 ;
 
-
-SELECT 
-	COUNT (DISTINCT store_id) AS distinct_stores,
-	COUNT (DISTINCT category) AS distinct_categories,
-	COUNT (DISTINCT product_id) AS distinct_product_ids,
-	COUNT (DISTINCT product_name) AS distinct_product_names,
-	COUNT (DISTINCT product_detail) AS distinct_product_details
-FROM analytics.coffee_shop_raw
-;
-
 -- We have: 
 -- 	transaction information
 -- 	date-time information
@@ -42,7 +36,7 @@ FROM analytics.coffee_shop_raw
 
 -- Columns: 
 -- transaction_id, date, time, quantity, store_id, store_location, product_id, unit_price, category, product_name, product_detail
-    
+
 
 -- One row represents:
 -- 	one transaction
@@ -62,10 +56,49 @@ FROM analytics.coffee_shop_raw
 -- One category tied to many transactions, and has many products, 
 -- So, it should be separated from transactions and products
 
--- product_id uniquely identifies a product
--- product_detail tied to product_id, product_detail doesn't determine product_name, so it is transitive dependency
+-- product_id uniquely identifies a product_detail
 -- unit_price uniquely tied with product_id and product_detail
--- one product_name contains many product_detail, so these two should be separated
+-- so these should be in a separate table
+
+-- product_name doesn't determine product_detail, so it is transitive dependency
+-- one product_name tied to many product_detail, so these two should be separated 
 
 -- transaction date, time, and quantity are transactions properties. 
 -- these should remain in transactions table
+
+
+-- Total rows       
+SELECT 
+	COUNT(*)      --149116              
+FROM analytics.coffee_shop_raw
+;
+
+SELECT 
+	COUNT(transaction_id),         --149116
+	COUNT(DISTINCT transaction_id) --149116
+FROM analytics.coffee_shop_raw
+;
+-- So there aren't NULL transaction_id-s,
+-- and there aren't duplicate rows.
+
+
+SELECT 
+	COUNT (DISTINCT store_id) AS distinct_stores,                   -- 3
+	COUNT (DISTINCT store_location) AS distinct_stores,             -- 3
+	COUNT (DISTINCT category) AS distinct_categories,               -- 9
+	COUNT (DISTINCT product_id) AS distinct_product_ids,            -- 80
+	COUNT (DISTINCT product_name) AS distinct_product_names,        -- 29
+	COUNT (DISTINCT product_detail) AS distinct_product_details     -- 80
+FROM analytics.coffee_shop_raw
+;
+ -- The difference between the total row count and store, category, and product data shows that those are repeated multiple times,
+ -- and that the table mixes multiple entity types 
+
+
+-- The entities:
+ -- Transactions
+ -- Stores
+ -- Store Locations
+ -- Categories
+ -- Products
+ -- Product Flavours

@@ -1,5 +1,6 @@
 ALTER TABLE analytics.coffee_shop_raw
-ALTER COLUMN store_id TYPE INT;
+ALTER COLUMN store_id TYPE INT,
+ALTER COLUMN product_id TYPE INT;
 
 -- Store table
 CREATE TABLE analytics.stores (

@@ -77,3 +77,63 @@ FROM analytics.store_locations;
 SELECT 
 	*
 FROM analytics.stores;
+
+--     Creating Category table
+-----------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS analytics.categories CASCADE;
+
+CREATE TABLE analytics.categories (
+	category_id SERIAL PRIMARY KEY,
+	category VARCHAR(50)
+);
+
+INSERT INTO analytics.categories (category)
+SELECT DISTINCT
+	category
+FROM analytics.coffee_shop_raw raw;
+
+SELECT 
+	*
+FROM analytics.categories;
+---------------------------------------------
+
+DROP TABLE IF EXISTS analytics.products CASCADE;
+
+CREATE TABLE analytics.products (
+	product_id SERIAL PRIMARY KEY,
+	product_name VARCHAR(100)
+);
+
+INSERT INTO analytics.products (product_name)
+SELECT DISTINCT
+	product_name
+FROM analytics.coffee_shop_raw raw;
+
+SELECT 
+	*
+FROM analytics.products;
+----------------------------------------------
+DROP TABLE IF EXISTS analytics.product_variants CASCADE;
+
+CREATE TABLE analytics.products_variants (
+	product_variant_id INT PRIMARY KEY,
+	product_variant VARCHAR(100),
+	product_id INT REFERENCES analytics.products(product_id),
+	category_id INT REFERENCES analytics.categories(category_id)
+);
+
+
+INSERT INTO analytics.products_variants (product_variant_id, product_variant, product_id, category_id)
+SELECT DISTINCT
+	raw.product_id,
+ 	product_detail,
+	p.product_id, 
+	category_id
+FROM analytics.coffee_shop_raw raw
+JOIN analytics.products p ON raw.product_name = p.product_name
+JOIN analytics.categories c ON raw.category = c.category;
+
+SELECT 
+	*
+FROM analytics.products_variants pv
+;

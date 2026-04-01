@@ -40,6 +40,10 @@ CREATE TABLE analytics.stores (
 	location_id INT REFERENCES analytics.store_locations(location_id)
 );
 
+SELECT 
+*
+FROM analytics.stores;
+
 --     Populating Store Locations (Geographical hierarchy)  and Stores tables
 -----------------------------------------------------------------------------------------
 TRUNCATE TABLE analytics._stg_store_location_boundaries;
@@ -64,6 +68,9 @@ SELECT
   	location_id
 FROM analytics.coffee_shop_raw raw
 JOIN analytics.store_locations sl ON raw.store_location = sl.location_name;
+
+
+
 
 
 SELECT 
@@ -113,7 +120,7 @@ SELECT
 	*
 FROM analytics.products;
 ----------------------------------------------
-DROP TABLE IF EXISTS analytics.product_variants CASCADE;
+DROP TABLE IF EXISTS analytics.products_variants CASCADE;
 
 CREATE TABLE analytics.products_variants (
 	product_variant_id INT PRIMARY KEY,
@@ -122,7 +129,8 @@ CREATE TABLE analytics.products_variants (
 	category_id INT REFERENCES analytics.categories(category_id)
 );
 
-
+-- TRUNCATE TABLE analytics.products_variants;
+ 
 INSERT INTO analytics.products_variants (product_variant_id, product_variant, product_id, category_id)
 SELECT DISTINCT
 	raw.product_id,
@@ -130,10 +138,30 @@ SELECT DISTINCT
 	p.product_id, 
 	category_id
 FROM analytics.coffee_shop_raw raw
-JOIN analytics.products p ON raw.product_name = p.product_name
-JOIN analytics.categories c ON raw.category = c.category;
+LEFT JOIN analytics.products p ON raw.product_name = p.product_name
+LEFT JOIN analytics.categories c ON raw.category = c.category;
 
 SELECT 
+	-- COUNT(product_variant_id) AS variant_id,
+	-- COUNT(DISTINCT product_variant_id) AS distinct_variant_id,
+	-- COUNT(product_variant) AS variant,
+	-- COUNT(DISTINCT product_variant) AS distinct_variant
 	*
-FROM analytics.products_variants pv
+FROM analytics.products_variants 
+WHERE product_variant_id = 73
 ;
+
+------------------------------------------------------------
+DROP TABLE IF EXISTS analytics.transactions CASCADE;
+
+CREATE TABLE analytics.transactions (
+	transaction_id VARCHAR(20) PRIMARY KEY,
+	date DATE,
+	time TIME,
+    quantity INT,
+	unit_price NUMERIC(10,2),
+	store_id INT REFERENCES analytics.stores(store_id),
+	category_id INT REFERENCES analytics.categories(category_id),
+	product_id INT REFERENCES analytics.products(product_id),
+	product_variant_id INT REFERENCES analytics.products_variants(product_variant_id)
+);

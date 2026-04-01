@@ -1,3 +1,4 @@
+
 -- NYC-based coffee shop transaction data
 -- Fully denormalized table
 -- NO primary keys
@@ -49,7 +50,7 @@ LIMIT 160
 -- The coffee_shop_raw table isn't normalized
 
 -- store_id uniquely identifies a store
--- store_location is store attribute,
+-- store_location is store attribute. store_location is a transitive dependency
 -- So, store attributes should be separated 
 -- Also, I intent to add GEOMETRY data for store_location in a separate table (related with stores table by store_id) 
 
@@ -98,7 +99,9 @@ FROM analytics.coffee_shop_raw
 -- The entities:
  -- Transactions
  -- Stores
- -- Store Locations
+ -- Store Locations (hierarchy)
  -- Categories
  -- Products
  -- Product Flavours
+
+ 

@@ -1,0 +1,66 @@
+-- -- Scalar function for revenue segmentation
+-- CREATE OR REPLACE FUNCTION fn_revenue_range (
+--     p_quantity INT,
+--     p_price numeric(10,2)
+-- )
+-- RETURNS TEXT
+-- LANGUAGE sql
+-- AS $$
+--     SELECT 
+-- 		CASE
+-- 			WHEN p_quantity * p_price <= 10.0 THEN 'Low'
+-- 			WHEN p_quantity * p_price <= 40.0 THEN 'Medium'
+-- 			ELSE 'High'
+-- 		END AS revenue_range;
+-- $$;
+
+-- DROP FUNCTION fn_total_revenue_range
+
+
+-- Scalar function for revenue segmentation
+CREATE OR REPLACE FUNCTION analytics.fn_total_revenue_range(
+    p_total_revenue numeric(10,2)
+)
+RETURNS TEXT
+LANGUAGE sql
+AS $$
+    SELECT 
+		CASE
+			WHEN p_total_revenue <= 120.0 THEN 'Low'
+			WHEN p_total_revenue <= 200.0 THEN 'Medium'
+			ELSE 'High'
+		END AS total_revenue_range;
+$$;
+
+
+CREATE MATERIALIZED VIEW analytics.total_revenue_by_product AS
+SELECT
+	p.product_id,
+	category,
+	product_name,
+	SUM(quantity * price) AS total_revenue,
+	fn_total_revenue_range(SUM(quantity * price)) AS revenue_range
+FROM analytics.order_items oi
+LEFT JOIN analytics.products p ON oi.product_id = p.product_id
+GROUP BY
+	p.product_id,
+	product_name,
+	category
+ORDER BY total_revenue DESC;
+
+
+CREATE OR REPLACE PROCEDURE procedure_name (
+    parameter_name data_type,
+    ...
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    CREATE INDEX IF NOT EXISTS idx_revenue_by_product_id ON total_revenue_by_product(product_id);
+
+	REFRESH MATERIALIZED VIEW total_revenue_by_product
+	
+END;
+$$;
+
+

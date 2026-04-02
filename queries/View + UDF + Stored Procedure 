@@ -1,22 +1,3 @@
--- -- Scalar function for revenue segmentation
--- CREATE OR REPLACE FUNCTION fn_revenue_range (
---     p_quantity INT,
---     p_price numeric(10,2)
--- )
--- RETURNS TEXT
--- LANGUAGE sql
--- AS $$
---     SELECT 
--- 		CASE
--- 			WHEN p_quantity * p_price <= 10.0 THEN 'Low'
--- 			WHEN p_quantity * p_price <= 40.0 THEN 'Medium'
--- 			ELSE 'High'
--- 		END AS revenue_range;
--- $$;
-
--- DROP FUNCTION fn_total_revenue_range
-
-
 -- Scalar function for revenue segmentation
 CREATE OR REPLACE FUNCTION analytics.fn_total_revenue_range(
     p_total_revenue numeric(10,2)
@@ -32,7 +13,7 @@ AS $$
 		END AS total_revenue_range;
 $$;
 
-
+-- Materialized view of total revenue by product
 CREATE MATERIALIZED VIEW analytics.total_revenue_by_product AS
 SELECT
 	p.product_id,
@@ -48,19 +29,28 @@ GROUP BY
 	category
 ORDER BY total_revenue DESC;
 
-
-CREATE OR REPLACE PROCEDURE procedure_name (
-    parameter_name data_type,
-    ...
+-- Price updating procedure
+CREATE OR REPLACE PROCEDURE analytics.sp_update_price (
+    p_product_id INT,
+    p_price numeric(10,2)
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    CREATE INDEX IF NOT EXISTS idx_revenue_by_product_id ON total_revenue_by_product(product_id);
+	UPDATE analytics.products
+	SET price = p_price
+	WHERE product_id = p_product_id;
 
-	REFRESH MATERIALIZED VIEW total_revenue_by_product
+	IF NOT FOUND THEN
+	RAISE EXCEPTION 'Product % not found', p_product_id;
+	END IF;
+
+	CREATE INDEX IF NOT EXISTS idx_revenue_by_product_id ON analytics.total_revenue_by_product(product_id);
+
+	REFRESH MATERIALIZED VIEW analytics.total_revenue_by_product;
 	
 END;
 $$;
 
-
+CALL analytics.sp_update_price(3, 12.99);
+CALL analytics.sp_update_price(2, 8.65);

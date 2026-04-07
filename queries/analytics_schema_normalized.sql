@@ -102,55 +102,56 @@ FROM analytics.coffee_shop_raw raw;
 SELECT 
 	*
 FROM analytics.categories;
+
+-- Creating Products table
 ---------------------------------------------
 
 DROP TABLE IF EXISTS analytics.products CASCADE;
 
 CREATE TABLE analytics.products (
 	product_id SERIAL PRIMARY KEY,
-	product_name VARCHAR(100)
+	product_name VARCHAR(100),
+	category_id INT REFERENCES analytics.categories(category_id)
 );
 
-INSERT INTO analytics.products (product_name)
+INSERT INTO analytics.products (product_name, category_id)
 SELECT DISTINCT
-	product_name
-FROM analytics.coffee_shop_raw raw;
+	product_name,
+	category_id
+FROM analytics.coffee_shop_raw raw
+LEFT JOIN analytics.categories c ON raw.category = c.category;
 
 SELECT 
 	*
 FROM analytics.products;
+
+-- Creating product Variants table
 ----------------------------------------------
 DROP TABLE IF EXISTS analytics.products_variants CASCADE;
 
 CREATE TABLE analytics.products_variants (
 	product_variant_id INT PRIMARY KEY,
 	product_variant VARCHAR(100),
-	product_id INT REFERENCES analytics.products(product_id),
-	category_id INT REFERENCES analytics.categories(category_id)
+	product_id INT REFERENCES analytics.products(product_id)
 );
 
 -- TRUNCATE TABLE analytics.products_variants;
  
-INSERT INTO analytics.products_variants (product_variant_id, product_variant, product_id, category_id)
+INSERT INTO analytics.products_variants (product_variant_id, product_variant, product_id)
 SELECT DISTINCT
 	raw.product_id,
  	product_detail,
-	p.product_id, 
-	category_id
+	p.product_id
 FROM analytics.coffee_shop_raw raw
 LEFT JOIN analytics.products p ON raw.product_name = p.product_name
-LEFT JOIN analytics.categories c ON raw.category = c.category;
-
-SELECT 
-	-- COUNT(product_variant_id) AS variant_id,
-	-- COUNT(DISTINCT product_variant_id) AS distinct_variant_id,
-	-- COUNT(product_variant) AS variant,
-	-- COUNT(DISTINCT product_variant) AS distinct_variant
-	*
-FROM analytics.products_variants 
-WHERE product_variant_id = 73
 ;
 
+SELECT 
+	*
+FROM analytics.products_variants
+;
+
+-- Creating Transactions table
 ------------------------------------------------------------
 DROP TABLE IF EXISTS analytics.transactions CASCADE;
 
@@ -165,3 +166,26 @@ CREATE TABLE analytics.transactions (
 	product_id INT REFERENCES analytics.products(product_id),
 	product_variant_id INT REFERENCES analytics.products_variants(product_variant_id)
 );
+
+INSERT INTO analytics.transactions (transaction_id, date, time, quantity, unit_price, store_id, category_id, product_id, product_variant_id)
+SELECT DISTINCT
+	raw.transaction_id,
+	date,
+	time,
+	quantity,
+	unit_price,
+	s.store_id,
+	c.category_id,
+	p.product_id,
+	pv.product_variant_id
+FROM analytics.coffee_shop_raw raw 
+JOIN analytics.stores s             ON raw.store_id = s.store_id
+JOIN analytics.categories c 		ON raw.category = c.category
+JOIN analytics.products p 			ON raw.product_name = p.product_name
+JOIN analytics.products_variants pv ON raw.product_detail = pv.product_variant
+;
+
+SELECT
+	*
+FROM analytics.transactions
+LIMIT 10;

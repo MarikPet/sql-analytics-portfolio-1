@@ -32,10 +32,10 @@ LIMIT 160
 
 -- ------------- THE GOAL
 
--- What is the general statistic schema of coffee shop condition?
+-- What is the general statistical summary of coffee shop condition?
 -- What is the geographical distribution of coffee shops?
 -- Which categories/products are the top best sellers?
--- Which days of week bring the most revenue?
+-- Which days of week which bring the most revenue?
 -- Which time of the day is the pick-time, which products are best sellers at that time?
 -- Which area brings the most revenue?
 -- The operational load of each shop (quantity sold).
@@ -89,7 +89,7 @@ FROM analytics.coffee_shop_raw
 -- store_location is store attribute. 
 -- Store attributes should be separated 
 
--- store_location is a transitive dependency: store_location -> goegraphical data(boundaries)
+-- store_location is a transitive dependency: store_location -> geographical data(boundaries)
 -- Also, there is a need to add GEOMETRY data for store_location in a separate table (related with stores table by store_id) 
 
 -- One category tied to many transactions, and has many products, 

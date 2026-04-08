@@ -71,8 +71,6 @@ JOIN analytics.store_locations sl ON raw.store_location = sl.location_name;
 
 
 
-
-
 SELECT 
 	*
 FROM analytics._stg_store_location_boundaries;
@@ -84,6 +82,7 @@ FROM analytics.store_locations;
 SELECT 
 	*
 FROM analytics.stores;
+
 
 --     Creating Category table
 -----------------------------------------------------------------------------------------
@@ -102,6 +101,7 @@ FROM analytics.coffee_shop_raw raw;
 SELECT 
 	*
 FROM analytics.categories;
+
 
 -- Creating Products table
 ---------------------------------------------
@@ -125,6 +125,7 @@ SELECT
 	*
 FROM analytics.products;
 
+
 -- Creating product Variants table
 ----------------------------------------------
 DROP TABLE IF EXISTS analytics.products_variants CASCADE;
@@ -135,8 +136,6 @@ CREATE TABLE analytics.products_variants (
 	product_id INT REFERENCES analytics.products(product_id)
 );
 
--- TRUNCATE TABLE analytics.products_variants;
- 
 INSERT INTO analytics.products_variants (product_variant_id, product_variant, product_id)
 SELECT DISTINCT
 	raw.product_id,
@@ -150,6 +149,7 @@ SELECT
 	*
 FROM analytics.products_variants
 ;
+
 
 -- Creating Transactions table
 ------------------------------------------------------------

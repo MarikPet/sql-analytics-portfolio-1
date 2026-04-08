@@ -44,6 +44,7 @@ SELECT
 *
 FROM analytics.stores;
 
+
 --     Populating Store Locations (Geographical hierarchy)  and Stores tables
 -----------------------------------------------------------------------------------------
 TRUNCATE TABLE analytics._stg_store_location_boundaries;
@@ -162,12 +163,10 @@ CREATE TABLE analytics.transactions (
     quantity INT,
 	unit_price NUMERIC(10,2),
 	store_id INT REFERENCES analytics.stores(store_id),
-	category_id INT REFERENCES analytics.categories(category_id),
-	product_id INT REFERENCES analytics.products(product_id),
 	product_variant_id INT REFERENCES analytics.products_variants(product_variant_id)
 );
 
-INSERT INTO analytics.transactions (transaction_id, date, time, quantity, unit_price, store_id, category_id, product_id, product_variant_id)
+INSERT INTO analytics.transactions (transaction_id, date, time, quantity, unit_price, store_id, product_variant_id)
 SELECT DISTINCT
 	raw.transaction_id,
 	date,
@@ -175,13 +174,9 @@ SELECT DISTINCT
 	quantity,
 	unit_price,
 	s.store_id,
-	c.category_id,
-	p.product_id,
 	pv.product_variant_id
 FROM analytics.coffee_shop_raw raw 
 JOIN analytics.stores s             ON raw.store_id = s.store_id
-JOIN analytics.categories c 		ON raw.category = c.category
-JOIN analytics.products p 			ON raw.product_name = p.product_name
 JOIN analytics.products_variants pv ON raw.product_detail = pv.product_variant
 ;
 

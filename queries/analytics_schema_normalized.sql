@@ -188,3 +188,25 @@ LIMIT 10;
 
 CREATE INDEX IF NOT EXISTS idx_store_id   ON analytics.transactions(store_id);
 CREATE INDEX IF NOT EXISTS idx_product_variant_id ON analytics.transactions(product_variant_id);
+
+CREATE INDEX IF NOT EXISTS idx_transactions_date_store
+    ON analytics.transactions(date, store_id);
+
+CREATE INDEX IF NOT EXISTS idx_transactions_store_category
+    ON analytics.transactions(store_id, product_variant_id);
+
+
+
+
+SELECT 
+	date, 
+	tr.store_id, 
+	location_name,
+	SUM(quantity*unit_price)
+FROM analytics.transactions tr
+JOIN analytics.stores s ON tr.store_id = s.store_id
+JOIN analytics.store_locations sl ON sl.location_id = s.location_id
+GROUP BY tr.store_id, location_name, date
+;
+
+

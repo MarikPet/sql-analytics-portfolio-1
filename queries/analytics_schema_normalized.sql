@@ -40,11 +40,6 @@ CREATE TABLE analytics.stores (
 	location_id INT REFERENCES analytics.store_locations(location_id)
 );
 
-SELECT 
-*
-FROM analytics.stores;
-
-
 --     Populating Store Locations (Geographical hierarchy)  and Stores tables
 -----------------------------------------------------------------------------------------
 TRUNCATE TABLE analytics._stg_store_location_boundaries;
@@ -71,20 +66,6 @@ FROM analytics.coffee_shop_raw raw
 JOIN analytics.store_locations sl ON raw.store_location = sl.location_name;
 
 
-
-SELECT 
-	*
-FROM analytics._stg_store_location_boundaries;
-
-SELECT 
-	*
-FROM analytics.store_locations;
-
-SELECT 
-	*
-FROM analytics.stores;
-
-
 --     Creating Category table
 -----------------------------------------------------------------------------------------
 DROP TABLE IF EXISTS analytics.categories CASCADE;
@@ -99,9 +80,6 @@ SELECT DISTINCT
 	category
 FROM analytics.coffee_shop_raw raw;
 
-SELECT 
-	*
-FROM analytics.categories;
 
 
 -- Creating Products table
@@ -122,9 +100,6 @@ SELECT DISTINCT
 FROM analytics.coffee_shop_raw raw
 LEFT JOIN analytics.categories c ON raw.category = c.category;
 
-SELECT 
-	*
-FROM analytics.products;
 
 
 -- Creating product Variants table
@@ -146,10 +121,6 @@ FROM analytics.coffee_shop_raw raw
 LEFT JOIN analytics.products p ON raw.product_name = p.product_name
 ;
 
-SELECT 
-	*
-FROM analytics.products_variants
-;
 
 
 -- Creating Transactions table
@@ -180,11 +151,6 @@ JOIN analytics.stores s             ON raw.store_id = s.store_id
 JOIN analytics.products_variants pv ON raw.product_detail = pv.product_variant
 ;
 
-SELECT
-	*
-FROM analytics.transactions
-LIMIT 10;
-
 
 CREATE INDEX IF NOT EXISTS idx_store_id   ON analytics.transactions(store_id);
 CREATE INDEX IF NOT EXISTS idx_product_variant_id ON analytics.transactions(product_variant_id);
@@ -195,18 +161,15 @@ CREATE INDEX IF NOT EXISTS idx_transactions_date_store
 CREATE INDEX IF NOT EXISTS idx_transactions_store_category
     ON analytics.transactions(store_id, product_variant_id);
 
+CREATE INDEX IF NOT EXISTS idx_transactions_date_category
+    ON analytics.transactions(date, product_variant_id);
 
+CREATE INDEX IF NOT EXISTS idx_transactions_store_date
+    ON analytics.transactions(store_id, date);
 
+CREATE INDEX IF NOT EXISTS idx_transactions_date_product_variant
+    ON analytics.transactions(date, product_variant_id);
 
-SELECT 
-	date, 
-	tr.store_id, 
-	location_name,
-	SUM(quantity*unit_price)
-FROM analytics.transactions tr
-JOIN analytics.stores s ON tr.store_id = s.store_id
-JOIN analytics.store_locations sl ON sl.location_id = s.location_id
-GROUP BY tr.store_id, location_name, date
-;
-
+CREATE INDEX IF NOT EXISTS idx_transactions_store_product_variant
+    ON analytics.transactions(store_id, product_variant_id);
 

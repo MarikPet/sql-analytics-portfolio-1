@@ -118,3 +118,4 @@ CREATE INDEX IF NOT EXISTS idx_store_location_summary_geom
     ON analytics.store_location_summary
     USING GIST (geom);
 
+

@@ -184,3 +184,7 @@ SELECT
 	*
 FROM analytics.transactions
 LIMIT 10;
+
+
+CREATE INDEX IF NOT EXISTS idx_store_id   ON analytics.transactions(store_id);
+CREATE INDEX IF NOT EXISTS idx_product_variant_id ON analytics.transactions(product_variant_id);

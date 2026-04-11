@@ -118,4 +118,52 @@ CREATE INDEX IF NOT EXISTS idx_store_location_summary_geom
     ON analytics.store_location_summary
     USING GIST (geom);
 
+ -- Hours Analysis
+DROP TABLE IF EXISTS analytics.hourly_sales CASCADE;
+ 
+CREATE TABLE analytics.hourly_sales AS
+SELECT 
+	EXTRACT(HOUR FROM time) AS hour, 
+	SUM(quantity*unit_price) AS total_sales
+FROM analytics.transactions
+GROUP BY hour
+;
+
+-- Price Sensitivity / Average Unit Price Trends
+DROP TABLE IF EXISTS analytics.price_trends CASCADE;
+
+CREATE TABLE analytics.price_trends AS
+SELECT 
+	product_variant_id, 
+	date, 
+	ROUND(AVG(unit_price), 2) AS avg_price
+FROM analytics.transactions
+GROUP BY product_variant_id, date;
+
+
+-- Store Performance Ranking
+DROP TABLE IF EXISTS analytics.store_rankings CASCADE;
+
+CREATE TABLE analytics.store_rankings AS
+SELECT 
+	store_id, 
+	SUM(quantity) AS total_units_sold,
+	SUM(quantity*unit_price) AS total_revenue,
+    RANK() OVER (ORDER BY SUM(quantity) DESC) AS quantity_rank,
+    RANK() OVER (ORDER BY SUM(quantity*unit_price) DESC) AS revenue_rank
+FROM analytics.transactions
+GROUP BY store_id;
+
+-- Sales density per km2
+DROP TABLE IF EXISTS analytics.sales_density CASCADE;
+
+CREATE TABLE analytics.sales_density AS
+SELECT 
+	location_id, 
+	location_name,
+    SUM(total_sales)/ST_Area(geom::geography) AS sales_per_m2
+FROM analytics.store_location_summary
+GROUP BY location_id, location_name, geom;
+
+
 

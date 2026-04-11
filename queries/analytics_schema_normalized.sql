@@ -173,3 +173,6 @@ CREATE INDEX IF NOT EXISTS idx_transactions_date_product_variant
 CREATE INDEX IF NOT EXISTS idx_transactions_store_product_variant
     ON analytics.transactions(store_id, product_variant_id);
 
+CREATE INDEX IF NOT EXISTS idx_transactions_id_product_variant
+    ON analytics.transactions(transaction_id, product_variant_id);
+
